@@ -78,7 +78,7 @@ extend(ChartInternal.prototype, {
 			$$.context ? $$.context.select(`.${CLASS.brush}`) : d3Select([])
 		);
 
-		$$.brush.initZoom = () => {
+		$$.brush.initZoom = function() {
 			let changed = false;
 
 			if (firstUpdate && $$.config.subchart_defzoom) {
