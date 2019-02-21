@@ -197,7 +197,7 @@ extend(ChartInternal.prototype, {
 		if ($$.data.targets.length) {
 			$$.xs = [];
 
-			$$.data.targets[0].values.forEach(v => {
+			$$.getMaxDataCountTarget($$.data.targets).values.forEach(v => {
 				$$.xs[v.index] = v.x;
 			});
 		}

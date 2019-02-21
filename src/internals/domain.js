@@ -164,6 +164,11 @@ extend(ChartInternal.prototype, {
 			isAllNegative && (paddingTop = -yDomainMax);
 		}
 
+		// Fix padding bottom, so y values become negative
+		if (isAllPositive && paddingBottom > yDomainMin) {
+			paddingBottom = yDomainMin;
+		}
+
 		const domain = [yDomainMin - paddingBottom, yDomainMax + paddingTop];
 
 		return isInverted ? domain.reverse() : domain;

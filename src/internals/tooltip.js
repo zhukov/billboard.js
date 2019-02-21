@@ -195,8 +195,7 @@ extend(ChartInternal.prototype, {
 		const right = left + tWidth;
 
 		if (right > chartRight) {
-			// 20 is needed for Firefox to keep tooltip width
-			left -= right - chartRight + 20;
+			left = left - tWidth - 50;
 		}
 
 		if (top + tHeight > $$.currentHeight) {
@@ -206,6 +205,11 @@ extend(ChartInternal.prototype, {
 		if (top < 0) {
 			top = 0;
 		}
+
+		if (left < 0) {
+			left = 0;
+		}
+
 
 		return {top, left};
 	},
