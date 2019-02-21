@@ -608,6 +608,14 @@ export default class ChartInternal {
 		const durationForAxis = wth.TransitionForAxis ? duration : 0;
 		const transitions = transitionsValue || $$.axis.generateTransitions(durationForAxis);
 
+		if (options.initializing) {
+			if ($$.brush && $$.brush.initZoom()) {
+				wth.Y = $$.config.zoom_rescale;
+				wth.Subchart = true;
+				wth.Dimension = true;
+			}
+		}
+
 		!(options.initializing && config.tooltip_init_show) &&
 			$$.inputType === "touch" && $$.hideTooltip();
 

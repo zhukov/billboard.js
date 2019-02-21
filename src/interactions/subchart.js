@@ -23,13 +23,16 @@ extend(ChartInternal.prototype, {
 		const $$ = this;
 		const config = $$.config;
 		const isRotated = config.axis_rotated;
+		let firstUpdate = true;
 
 		// set the brush
 		$$.brush = isRotated ? d3BrushY() : d3BrushX();
 
 		// set "brush" event
 		const brushHandler = () => {
-			$$.redrawForBrush();
+			if (!firstUpdate) {
+				$$.redrawForBrush();
+			}
 		};
 
 		$$.brush
@@ -37,7 +40,7 @@ extend(ChartInternal.prototype, {
 				$$.inputType === "touch" && $$.hideTooltip();
 				brushHandler();
 			})
-			.on("brush", brushHandler);
+			.on("brush end", brushHandler);
 
 		$$.brush.update = function() {
 			const extent = this.extent()();
@@ -74,6 +77,23 @@ extend(ChartInternal.prototype, {
 		$$.brush.getSelection = () => (
 			$$.context ? $$.context.select(`.${CLASS.brush}`) : d3Select([])
 		);
+
+		$$.brush.initZoom = () => {
+			let changed = false;
+
+			if (firstUpdate && $$.config.subchart_defzoom) {
+				const extent = this.extent()();
+				const domain = $$.config.subchart_defzoom(extent);
+
+				if (domain && domain.length) {
+					$$.brush.move.call(this, $$.brush.getSelection(), domain);
+					$$.brushHandlesUpdate();
+					changed = true;
+				}
+			}
+			firstUpdate = false;
+			return changed;
+		};
 	},
 
 	/**

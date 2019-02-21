@@ -1152,6 +1152,7 @@ export default class Options {
 			 *  }
 			 */
 			subchart_show: false,
+			subchart_defzoom: false,
 			subchart_size_height: 60,
 			subchart_axis_x_show: true,
 			subchart_axis_x_tick_show: true,
