@@ -317,6 +317,22 @@ extend(ChartInternal.prototype, {
 			});
 		}
 
+		// Need to clone
+		$$.addCache("$totalPerIndex", sum.slice());
+
+		if ($$.hiddenTargetIds.length) {
+			let hiddenSum = $$.api.data.values.call($$.api, $$.hiddenTargetIds, false);
+
+			if (hiddenSum.length) {
+				hiddenSum = hiddenSum.reduce((acc, curr) =>
+					acc.map((v, i) =>
+						((isNumber(v) ? v : 0) + curr[i])
+					)
+				);
+				sum = sum.map((v, i) => v - hiddenSum[i]);
+			}
+		}
+
 		return sum;
 	},
 
@@ -776,18 +792,18 @@ extend(ChartInternal.prototype, {
 	 * @return {Number} Ratio value
 	 * @private
 	 */
-	getRatio(type, d, asPercent) {
+	getRatio(type, d, asPercent, totalCache) {
 		const $$ = this;
 		const config = $$.config;
 		const api = $$.api;
 		let ratio = 0;
 
-		if (d && api.data.shown.call(api).length) {
-			const dataValues = api.data.values.bind(api);
-
+		if (d && (totalCache || api.data.shown.call(api).length)) {
 			ratio = d.ratio || d.value;
 
 			if (type === "arc") {
+				const dataValues = api.data.values.bind(api);
+
 				// if has padAngle set, calculate rate based on value
 				if ($$.pie.padAngle()()) {
 					let total = $$.getTotalDataSum();
@@ -805,18 +821,12 @@ extend(ChartInternal.prototype, {
 					);
 				}
 			} else if (type === "index") {
-				let total = this.getTotalPerIndex();
-
-				if ($$.hiddenTargetIds.length) {
-					let hiddenSum = dataValues($$.hiddenTargetIds, false);
-
-					if (hiddenSum.length) {
-						hiddenSum = hiddenSum
-							.reduce((acc, curr) => acc.map((v, i) => (isNumber(v) ? v : 0) + curr[i]));
-
-						total = total.map((v, i) => v - hiddenSum[i]);
-					}
+				if (d.value === 0) {
+					d.ratio = 0;
+					return d.ratio;
 				}
+
+				const total = totalCache === undefined ? this.getTotalPerIndex() : totalCache;
 
 				d.ratio = isNumber(d.value) && total && total[d.index] > 0 ?
 					d.value / total[d.index] : 0;

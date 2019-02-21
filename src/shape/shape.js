@@ -113,40 +113,49 @@ extend(ChartInternal.prototype, {
 		const $$ = this;
 		const targets = $$.orderTargets($$.filterTargetsToShow($$.data.targets.filter(typeFilter, $$)));
 		const targetIds = targets.map(t => t.id);
+		const isStackNormalized = $$.isStackNormalized();
 
 		return (d, idx) => {
 			const scale = isSub ? $$.getSubYScale(d.id) : $$.getYScale(d.id);
 			const y0 = scale(0);
 			let offset = y0;
 			let i = idx;
+			// const isStepType = $$.isStepType(d);
+			const x2 = +d.x;
+			let total;
+
+			if (isStackNormalized) {
+				total = $$.getTotalPerIndex();
+			}
 
 			targets
 				.forEach(t => {
-					const rowValues = $$.isStepType(d) ? $$.convertValuesToStep(t.values) : t.values;
-					const values = rowValues.map(v => ($$.isStackNormalized() ? $$.getRatio("index", v, true) : v.value));
-
 					if (t.id === d.id || indices[t.id] !== indices[d.id]) {
 						return;
 					}
+					// Don't know what is this for, but it's degrading performance
+					// Area-step works fine without it
+					// var rowValues = isStepType ? $$.convertValuesToStep(t.values) : t.values;
+					const rowValues = t.values;
 
 					if (targetIds.indexOf(t.id) < targetIds.indexOf(d.id)) {
 						// check if the x values line up
-						if (isUndefined(rowValues[i]) || +rowValues[i].x !== +d.x) { // "+" for timeseries
+						if (isUndefined(rowValues[i]) || +rowValues[i].x !== x2) { // "+" for timeseries
 							// if not, try to find the value that does line up
 							i = -1;
 
 							rowValues.forEach((v, j) => {
-								const x1 = v.x.constructor === Date ? +v.x : v.x;
-								const x2 = d.x.constructor === Date ? +d.x : d.x;
-
-								if (x1 === x2) {
+								if ((+v.x) === x2) {
 									i = j;
 								}
 							});
 						}
 
 						if (i in rowValues && rowValues[i].value * d.value >= 0) {
-							offset += scale(values[i]) - y0;
+							const v = rowValues[i];
+							const value = isStackNormalized ? $$.getRatio("index", v, true, total) : v.value;
+
+							offset += scale(value) - y0;
 						}
 					}
 				});
