@@ -450,7 +450,7 @@ export default class ChartInternal {
 			bottom: $$.getHorizontalAxisHeight("y") + legendHeightForBottom + $$.getCurrentPaddingBottom(),
 			left: subchartHeight + (hasArc ? 0 : $$.getCurrentPaddingLeft())
 		} : {
-			top: 4 + $$.getCurrentPaddingTop(), // for top tick text
+			top: 5 + $$.getCurrentPaddingTop(), // for top tick text
 			right: hasArc ? 0 : $$.getCurrentPaddingRight(),
 			bottom: xAxisHeight + subchartHeight + legendHeightForBottom + $$.getCurrentPaddingBottom(),
 			left: hasArc ? 0 : $$.getCurrentPaddingLeft()

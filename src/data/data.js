@@ -436,6 +436,8 @@ extend(ChartInternal.prototype, {
 		const $$ = this;
 		let xs = [];
 
+		const xDomain = $$.x.domain();
+
 		if (targets && targets.length) {
 			xs = getUnique(
 				mergeArray(targets.map(t => t.values.map(v => +v.x)))
@@ -443,6 +445,8 @@ extend(ChartInternal.prototype, {
 
 			xs = $$.isTimeSeries() ? xs.map(x => new Date(+x)) : xs.map(x => +x);
 		}
+
+		xs = xs.filter(t => (t >= xDomain[0] && t <= xDomain[1]));
 
 		return sortValue(xs);
 	},
