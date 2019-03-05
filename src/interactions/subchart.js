@@ -27,6 +27,7 @@ extend(ChartInternal.prototype, {
 
 		// set the brush
 		$$.brush = isRotated ? d3BrushY() : d3BrushX();
+		$$.brush.handleSize(20);
 
 		// set "brush" event
 		const brushHandler = () => {
@@ -132,12 +133,6 @@ extend(ChartInternal.prototype, {
 			.append("g")
 			.attr("class", CLASS.chartLines);
 
-		// Add extent rect for Brush
-		context.append("g")
-			.attr("clip-path", clipPath)
-			.attr("class", CLASS.brush)
-			.call($$.brush);
-
 		// ATTENTION: This must be called AFTER chart added
 		// Add Axis
 		$$.axes.subx = context.append("g")
@@ -146,20 +141,34 @@ extend(ChartInternal.prototype, {
 			.attr("clip-path", config.axis_rotated ? "" : $$.clipPathForXAxis)
 			.style("visibility", config.subchart_axis_x_show ? visibility : "hidden");
 
+		// Add extent rect for Brush
+		context.append("g")
+			// .attr("clip-path", clipPath)
+			.attr("class", CLASS.brush)
+			.call($$.brush);
+
 		const brush = context.select(".".concat(CLASS.brush));
 		const handleW = context.select(".".concat("handle--w"));
 		const handleE = context.select(".".concat("handle--e"));
 
-		$$.brushHandleW = brush.append("line").attr("class", "bb-brush-handle bb-brush-handle--w");
-		$$.brushHandleE = brush.append("line").attr("class", "bb-brush-handle bb-brush-handle--e");
+		const y1 = -3;
+		const y2 = config.subchart_size_height + 3;
+
+		$$.brushHandleW = brush.insert("line", ":first-child")
+			.attr("class", "bb-brush-handle bb-brush-handle--w")
+			.attr("stroke-linecap", "round")
+			.attr("y1", y1)
+			.attr("y2", y2);
+		$$.brushHandleE = brush.insert("line", ":first-child")
+			.attr("class", "bb-brush-handle bb-brush-handle--e")
+			.attr("stroke-linecap", "round")
+			.attr("y1", y1)
+			.attr("y2", y2);
 		$$.brushHandlesUpdate = function brushHandlesUpdate() {
 			if (handleE.style("display") !== "none") {
-				let xW = parseInt(handleW.attr("x"), 10) + parseInt(handleW.attr("width") / 2, 10) + 2;
-				let xE = parseInt(handleE.attr("x"), 10) + parseInt(handleE.attr("width") / 2, 10) - 2;
-				const y1 = parseInt(handleW.attr("y"), 10);
-				const y2 = y1 + parseInt(handleW.attr("height"), 10);
+				let xW = parseInt(handleW.attr("x"), 10) + parseInt(handleW.attr("width") / 2, 10) + 0;
+				let xE = parseInt(handleE.attr("x"), 10) + parseInt(handleE.attr("width") / 2, 10) - 0;
 
-				// y1 = 0, y2 = 45;
 				if (xW > xE) {
 					xE = (xW + xE) / 2;
 					xW = xE;
@@ -167,14 +176,10 @@ extend(ChartInternal.prototype, {
 				$$.brushHandleW
 					.attr("x1", xW)
 					.attr("x2", xW)
-					.attr("y1", y1)
-					.attr("y2", y2)
 					.style("display", "");
 				$$.brushHandleE
 					.attr("x1", xE)
 					.attr("x2", xE)
-					.attr("y1", y1)
-					.attr("y2", y2)
 					.style("display", "");
 			} else {
 				$$.brushHandleW.style("display", "none");
