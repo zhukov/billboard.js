@@ -28,7 +28,7 @@ import "./internals/scale";
 import "./internals/domain";
 import "./data/data";
 import "./data/data.convert";
-import "./data/data.load";
+// import "./data/data.load";
 import "./internals/category";
 import "./interactions/interaction";
 import "./internals/size";
@@ -58,13 +58,13 @@ import "./internals/class";
 import "./api/api.focus";
 import "./api/api.show";
 import "./api/api.zoom";
-import "./api/api.load";
-import "./api/api.flow";
-import "./api/api.selection";
+// import "./api/api.load";
+// import "./api/api.flow";
+// import "./api/api.selection";
 import "./api/api.transform";
 import "./api/api.group";
 import "./api/api.grid";
-import "./api/api.region";
+// import "./api/api.region";
 import "./api/api.data";
 import "./api/api.category";
 import "./api/api.color";
@@ -74,10 +74,11 @@ import "./api/api.legend";
 import "./api/api.chart";
 import "./api/api.tooltip";
 import "./internals/ua";
-import "./api/api.export";
+// import "./api/api.export";
 
 // base CSS
 import "./scss/billboard.scss";
+
 
 /**
  * @namespace bb
