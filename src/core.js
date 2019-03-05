@@ -2,6 +2,23 @@
  * Copyright (c) 2017 ~ present NAVER Corp.
  * billboard project is licensed under the MIT license
  */
+
+
+import {
+	select as d3Select,
+	mouse as d3Mouse
+} from "d3-selection";
+
+import {
+	timeFormat as d3TimeFormat,
+	utcFormat as d3UtcFormat
+} from "d3-time-format";
+
+import {
+	format as d3Format
+} from "d3-format";
+
+
 import Chart from "./internals/Chart";
 import ChartInternal from "./internals/ChartInternal";
 import Axis from "./axis/Axis";
@@ -123,6 +140,14 @@ const bb = {
 	 * @memberof bb
 	 */
 	instance: [],
+
+	d3: {
+		format: d3Format,
+		timeFormat: d3TimeFormat,
+		utcFormat: d3UtcFormat,
+		select: d3Select,
+		mouse: d3Mouse
+	},
 
 	/**
 	 * Internal chart object
